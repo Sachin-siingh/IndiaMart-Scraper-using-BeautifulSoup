@@ -1,0 +1,38 @@
+import pandas as pd  
+import requests     
+from bs4 import BeautifulSoup
+import numpy as np  
+
+url = 'https://dir.indiamart.com/impcat/alcohol-based-hand-sanitizer.html'
+response = requests.get(url)
+soup = BeautifulSoup(response.content, 'html.parser')
+
+names = []
+address = []
+contact = []
+
+handsanitizer_data = soup.findAll('div', attrs= {'class': 'r-cl b-gry'})
+
+for store in handsanitizer_data:
+ 
+    
+    name  = store.find('h2', class_ = 'lcname').text.replace('\n ', '') 
+    names.append( name)
+    
+    
+    addres  = store.find('p', class_ = 'sm clg').text.replace('\n ', '') 
+    address.append( addres)
+    
+        
+    cont  = store.find('span', class_ = 'pns_h duet').text.replace('\n ', '') 
+    contact.append( cont)
+    
+
+handsanitizer_DF = pd.DataFrame({'Name of Company': names, 'Address': address, 'Contact No.': contact })
+
+     
+handsanitizer_DF.to_excel("IndiaMart_Data_Scrape.xlsx")
+
+     
+
+   
